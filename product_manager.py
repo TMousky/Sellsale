@@ -29,7 +29,7 @@ class ProductManager:
         self.markup = cfg.MARKUP_MULTIPLIER
         self.db = _load_db()
 
-    def find_and_list_products(self, limit=5):
+    def find_and_list_products(self, limit=49):
         if len(self.db) >= self.cfg.MAX_PRODUCTS:
             log.info(f"At max products ({self.cfg.MAX_PRODUCTS}), skipping.")
             return 0
