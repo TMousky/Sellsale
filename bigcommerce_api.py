@@ -95,7 +95,7 @@ class BigCommerceAPI:
             payload
         )
 
-def get_unfulfilled_orders(self):
+    def get_unfulfilled_orders(self):
         try:
             r = requests.get(
                 f"{self.base_url}/orders",
@@ -110,7 +110,6 @@ def get_unfulfilled_orders(self):
         except Exception as e:
             log.warning(f"No orders yet: {e}")
             return []
-
 
     def get_order_products(self, order_id):
         data = self._get(f"{self.base_url}/orders/{order_id}/products")
