@@ -77,8 +77,10 @@ class ProductManager:
                         f"| AliEx: ${detail['sale_price']:.2f} → Store: ${shopify_price:.2f}"
                     )
                 time.sleep(0.5)
-            except Exception as e:
+except Exception as e:
                 log.error(f"  Failed to list product: {e}")
+                if hasattr(e, 'response') and e.response is not None:
+                    log.error(f"  BigCommerce error details: {e.response.text}")
 
         return added
 
