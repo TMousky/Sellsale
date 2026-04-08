@@ -62,13 +62,29 @@ class BigCommerceAPI:
             "is_visible": True,
             "brand_name": brand,
             "categories": categories or [18],
-            "images": [
-                {"image_url": url, "is_thumbnail": i == 0}
-                for i, url in enumerate(images[:5])
-            ],
         }
         result = self._post(f"{self.base_url_v3}/catalog/products", payload)
-        return result.get("data")
+        product = result.get("data")
+
+        if product and images:
+            self._add_images(product["id"], images)
+
+        return product
+
+    def _add_images(self, product_id, images):
+        for i, image_url in enumerate(images[:5]):
+            try:
+                payload = {
+                    "is_thumbnail": i == 0,
+                    "image_url": image_url,
+                }
+                self._post(
+                    f"{self.base_url_v3}/catalog/products/{product_id}/images",
+                    payload
+                )
+                time.sleep(0.3)
+            except Exception as e:
+                log.warning(f"Image upload failed: {e}")
 
     def update_product_price(self, product_id, new_price):
         payload = {"price": round(new_price, 2), "sale_price": round(new_price, 2)}
@@ -133,6 +149,9 @@ class BigCommerceAPI:
                 "items": items,
             }
             try:
-                self._post(f"{self.base_url}/orders/{order_id}/shipments", shipment_payload)
+                self._post(
+                    f"{self.base_url}/orders/{order_id}/shipments",
+                    shipment_payload
+                )
             except Exception as e:
                 log.warning(f"Shipment record failed: {e}")
