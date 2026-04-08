@@ -95,12 +95,22 @@ class BigCommerceAPI:
             payload
         )
 
-    def get_unfulfilled_orders(self):
-        data = self._get(
-            f"{self.base_url}/orders",
-            params={"status_id": 11, "limit": 50}
-        )
-        return data if isinstance(data, list) else []
+def get_unfulfilled_orders(self):
+        try:
+            r = requests.get(
+                f"{self.base_url}/orders",
+                headers=self.headers,
+                params={"status_id": 11, "limit": 50},
+                timeout=15,
+            )
+            if r.status_code == 204 or not r.text.strip():
+                return []
+            data = r.json()
+            return data if isinstance(data, list) else []
+        except Exception as e:
+            log.warning(f"No orders yet: {e}")
+            return []
+
 
     def get_order_products(self, order_id):
         data = self._get(f"{self.base_url}/orders/{order_id}/products")
