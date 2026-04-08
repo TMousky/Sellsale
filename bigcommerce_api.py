@@ -66,8 +66,10 @@ class BigCommerceAPI:
         result = self._post(f"{self.base_url_v3}/catalog/products", payload)
         product = result.get("data")
 
-        if product and images:
-            self._add_images(product["id"], images)
+# Images added separately to avoid 422 errors
+        # if product and images:
+        #     self._add_images(product["id"], images)
+
 
         return product
 
